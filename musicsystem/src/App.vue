@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+      <h1>音乐管理系统</h1>
     <div class="from_bos">
         <center>
     <table class="table table-striped" >
@@ -60,9 +61,10 @@
     </div>
     <div>
         <center>
-        <label for="select_name">查询歌曲类型</label><input type="text" placeholder="请输入歌曲类型" id="select_type"  v-model="mymusic.musictype"><br>
+        <label for="select_name">查询歌曲类型</label><input type="text" placeholder="请输入歌曲类型" id="select_type"  v-model="searchtype"><br>
         <button @click="findByType()" >查询</button><br><br>
         <button @click="getmusic()" >查询所有</button><br>
+        <button @click="AddForm = true;">添加歌曲</button>
         <!-- <label for="select_id">删除歌曲的id</label><input type="text" placeholder="请输入歌曲id" id="select_id" class="form-control" v-model="mymusic.id"><br>
         <button @click="deleteById()" class="btn btn-primary" >删除</button> -->
         </center>
@@ -83,7 +85,7 @@ export default {
   data(){
       return{
           EditForm:false,
-          AddForm:true,
+          AddForm:false,
           count:20,
           musicList:[],
           mymusic:{
@@ -93,6 +95,7 @@ export default {
               "musictype":"",
               "release_date":""
           },
+          searchtype:""
       };
   },
   methods:{
@@ -109,11 +112,18 @@ export default {
               release_date: this.mymusic.release_date
           };
           Axios.post("http://localhost:8080/musics",body)
-          .then(this.musicList.push(body));
+          .then(
+              this.getmusic,
+            //   this.musicList.push(body),
+              this.AddForm = false
+              );
       },
       findByType(){
-          Axios.get("http://localhost:8080/musics/type/"+this.mymusic.musictype)
-          .then(response => (this.musicList = response.data));
+          Axios.get("http://localhost:8080/musics/type/"+this.searchtype)
+          .then(response => (
+              this.musicList = response.data,
+              this.searchtype = ""
+          ));
       },
       remove(id){
           Axios.delete(`http://localhost:8080/musics/${id}`).then(
@@ -132,11 +142,15 @@ export default {
           Axios.put(`http://localhost:8080/musics/${id}`,body).then(
               this.getmusic,
               this.EditForm = false
-          )
+          );
+              this.mymusic.id = "";
+              this.mymusic.musicname = "";
+              this.mymusic.musicauthor = "";
+              this.mymusic.musictype = "";
+              this.mymusic.release_date = "";
       },
       setEditForm(id,musicname,musicauthor,musictype,release_date){
           this.EditForm = false;
-          this.AddForm = !this.AddForm;
           this.EditForm = !this.EditForm;
           this.mymusic.id = id;
           this.mymusic.musicname = musicname;
