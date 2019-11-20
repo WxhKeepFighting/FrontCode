@@ -1,7 +1,7 @@
 <template>
   <!-- bootstrap响应式布局grid -->
   <div id="app" class="container">
-    <h1>音乐管理系统</h1>
+    <h1 style="text-align:center">音乐管理系统</h1>
     <div class="form-group">
       <center>
         <table class="table table-striped mt-5">
@@ -88,9 +88,12 @@
           </div>
         
           <div class="form-group row">
-          <label for="type" class="col-sm-1 col-form-label"><span style="color: red">*</span>status:</label>
+          <label for="type" class="col-form-label col-sm-1"><span style="color: red">*</span>status:</label>
           <div class="col-sm-7">
-          <input type="text" class="form-control" id="type" placeholder="status" v-model="mymusic.status" />
+          <label for="a" class="col-form-label col-sm-2" >发行</label>
+          <input type="radio" id="a" value="true" v-model="mymusic.status" @click="mymusic.status = true"/>
+          <label for="b" class="col-form-label col-sm-2">未发行</label>
+          <input type="radio" id="b" value="false" v-model="mymusic.status" @click="mymusic.status = false"/>
           </div>
           <div
             class="alert alert-danger col-sm-4"
@@ -134,11 +137,6 @@
           </div>
           </div>
 
-          <!-- <div class="custom-file">
-              <input type="file" id="file" class="customFile col-sm-2" >
-              <label for="file" class="custom-file-label col-sm-7">选择文件</label>
-          </div> -->
-
           <div class="form-group row">
           <label for="file" class="col-sm-1 col-form-label"><span style="color: red">*</span>附件:</label>
           <div class="col-sm-7">
@@ -159,32 +157,50 @@
       
       <div v-if="EditForm">
           <div class="form-group row">    
-          <label for="name" class="col-sm-2"><span style="color: red">*</span>歌曲名称:</label>
+          <label for="name" class="col-sm-1 col-form-label"><span style="color: red">*</span>歌名:</label>
+          <div class="col-sm-7">
           <input
-            class="col-sm-7 form-control"
+            class="form-control"
             type="text"
             id="name"
             placeholder="请输入歌曲名称"
             v-model="mymusic.musicname"
           />
           </div>
+          </div>
           <div class="form-group row">
-          <label for="author" class="col-sm-2"><span style="color: red">*</span>歌曲作者:</label>
-          <input type="text" class="col-sm-7 form-control" id="author" placeholder="请输入歌曲作者" v-model="mymusic.musicauthor" required />
+          <label for="author" class="col-sm-1 col-form-label"><span style="color: red">*</span>作者:</label>
+          <div class="col-sm-7">
+          <input type="text" class="form-control" id="author" placeholder="请输入歌曲作者" v-model="mymusic.musicauthor" required />
+          </div>
           </div>
 
           <div class="form-group row">
-          <label for="type" class="col-sm-2"><span style="color: red">*</span>歌曲类型:</label>
-          <input type="text" class="col-sm-7 form-control" id="type" placeholder="请输入歌曲类型" v-model="mymusic.musictype" />
+          <label for="type" class="col-form-label col-sm-1"><span style="color: red">*</span>status:</label>
+          <div class="col-sm-7">
+          <label for="a" class="col-form-label col-sm-2" >发行</label>
+          <input type="radio" id="a" value="true" v-model="mymusic.status" @click="mymusic.status = true"/>
+          <label for="b" class="col-form-label col-sm-2">未发行</label>
+          <input type="radio" id="b" value="false" v-model="mymusic.status" @click="mymusic.status = false"/>
+          </div>
           </div> 
 
           <div class="form-group row">
-          <label for="date" class="col-sm-2"><span style="color: red">*</span>发行日期:</label>
-          <input type="date" class="col-sm-7 form-control" id="date" v-model="mymusic.release_date" />
+          <label for="date" class="col-sm-1 col-form-label"><span style="color: red">*</span>日期:</label>
+          <div class="col-sm-7">
+          <input type="date" class="form-control" id="date" v-model="mymusic.release_date" />
+          </div>
+          </div>
+
+          <div class="form-group row">
+          <label for="description" class="col-sm-1 col-form-label"><span style="color: red">*</span>描述:</label>
+          <div class="col-sm-7">
+          <textarea type="text" rows="10" v-model="mymusic.description" placeholder="歌曲描述" class="form-control"  id="description" />
+          </div>
           </div>
 
           <button
-            @click="updateById(mymusic.id,mymusic.musicname,mymusic.musicauthor,mymusic.musictype,mymusic.release_date)"
+            @click="updateById(mymusic.id,mymusic.musicname,mymusic.musicauthor,mymusic.status,mymusic.release_date)"
             class="btn btn-primary"
           >更新</button>
       </div>
@@ -202,17 +218,6 @@
         <button @click="getmusic()" class="btn btn-primary">查询所有</button>
         <br />
         <button @click="AddForm = true;EditForm = false" class="btn btn-primary" style="margin: 20px 0 0 0">添加歌曲</button>
-        <!-- <form id="upload" enctype="multipart/form-data" method="post">
-        <el-upload action=""
-                    :http-request="uploadSectionFile">
-                    <el-button size="small" type="primary">点击上传</el-button>
-        </el-upload>
-        <el-progress v-show="showProgress" :text-inside="true" :stroke-width="18"
-                            :percentage="uploadPercent"></el-progress>
-
-        </form> -->
-                <!-- <label for="select_id">删除歌曲的id</label><input type="text" placeholder="请输入歌曲id" id="select_id" class="form-control" v-model="mymusic.id"><br>
-        <button @click="deleteById()" class="btn btn-primary" >删除</button>-->
     </div>
     <!-- <span>传入的json数组的长度为:{{musics.length}}</span>  -->
 </template>
@@ -262,6 +267,8 @@ export default {
     //   if(body.id == ''||body.id<=0){
     //       this.errors = "";
     //   }
+    this.errors.id = "";//错误信息清空
+    this.errors.musicname = "";
     let body = new FormData();
     body.append("id",this.mymusic.id);
     body.append("musicname",this.mymusic.musicname);
@@ -274,6 +281,8 @@ export default {
         "Content-Type": "application/form-data"
     };
 
+    let flag = false;//判断是否报错
+
       Axios.post("http://localhost:8080/musics", body, header).then(
         // this.getmusic,
         response => 
@@ -285,14 +294,16 @@ export default {
             release_date: this.mymusic.release_date,
             description: this.mymusic.description,
             file: response.data
-        })
+        }),
         //   this.musicList.push(body),
       ).catch(
           (error) => {
+              flag = true;//报错了不需要清空输入框
               let messages = error.response.data;
               window.console.log(messages);
             //   写成一个通用的错误信息提取的库
-              messages.forEach(element => {
+            if(messages){
+                messages.forEach(element => {
                   if(element.field == "id") {
                       this.errors.id = element.defaultMessage;
                   }
@@ -300,8 +311,19 @@ export default {
                       this.errors.musicname = element.defaultMessage;
                   }
               });
+            }else{
+                this.errors.id = "输入的ID号已存在";
+            }
           }
       );
+      if(flag){//没有出错则清空输入输出框
+          this.mymusic.id = 0;
+          this.mymusic.musicname = "";
+          this.mymusic.musicauthor = "";
+          this.mymusic.status = "";
+          this.mymusic.release_date = "";
+          this.mymusic.description = "";
+      }
         // this.AddForm = false;
     },
     findByType() {
@@ -315,12 +337,12 @@ export default {
         //   this.musicList = this.musicList.filter()
       );
     },
-    updateById(id, name, author, type, date) {
+    updateById(id, name, author, status, date) {
       let body = {
         id: id,
         musicname: name,
         musicauthor: author,
-        musictype: type,
+        status: status,
         release_date: date
       };
       Axios.put(`http://localhost:8080/musics/${id}`, body).then(
@@ -330,7 +352,7 @@ export default {
       this.mymusic.id = "";
       this.mymusic.musicname = "";
       this.mymusic.musicauthor = "";
-      this.mymusic.musictype = "";
+      this.mymusic.status = "";
       this.mymusic.release_date = "";
     },
     setEditForm(id, musicname, musicauthor, musictype, release_date) {
