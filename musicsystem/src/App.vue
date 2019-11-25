@@ -109,7 +109,6 @@
             <span style="color: red">*</span>status:
           </label>
           <div class="col-sm-7">
-            <label for="a" class="col-form-label col-sm-2">发行</label>
             <input
               type="radio"
               id="a"
@@ -117,7 +116,7 @@
               v-model="mymusic.status"
               @click="mymusic.status = true"
             />
-            <label for="b" class="col-form-label col-sm-2">未发行</label>
+            <label for="a" class="col-form-label col-sm-2">发行</label>
             <input
               type="radio"
               id="b"
@@ -125,6 +124,7 @@
               v-model="mymusic.status"
               @click="mymusic.status = false"
             />
+            <label for="b" class="col-form-label col-sm-2">未发行</label>
           </div>
           <div
             class="alert alert-danger col-sm-4"
@@ -278,7 +278,7 @@
       </div>
     </div>
     <div class="form-group row">
-      <label for="select_name" class="col-sm-2">
+      <label for="select_type" class="col-sm-1 col-form-label">
         <span style="color: red">*</span>查询:
       </label>
       <div class="col-sm-7">
@@ -290,7 +290,8 @@
           v-model="searchtype"
         />
       </div>
-      <button @click="findByType()" class="btn btn-primary">查询</button>
+      <button @click="findByType()" class="btn btn-primary mr-2">类型查询</button>
+      <button @click="findById()" class="btn btn-primary">Id查询</button>
     </div>
 
     <br />
@@ -424,6 +425,19 @@ export default {
           }
       );
     },
+    findById(){
+        Axios.get("http://localhost:8080/musics/"+this.searchtype).then(
+            response =>
+            {
+            if (response.data == null) {
+              window.console.log("输入的歌手不存在!");
+            } else {
+              this.musicList = response.data;
+              this.searchtype = "";
+            }
+            }
+        );
+    },
     remove(id) {
       Axios.delete(`http://localhost:8080/musics/${id}`).then(
         this.getmusic
@@ -468,24 +482,24 @@ export default {
       this.mymusic.release_date = release_date;
       this.mymusic.description = description;
     },
-    uploadSectionFile(param) {
-      let form = new FormData();
-      form.append("file", param.file);
-      form.append("dir", "temp1");
-      Axios.post("http://localhost/upload", form, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        },
-        onUploadProgress:
-          ((ProgressEvent.loaded / ProgressEvent.total) * 100) | 0
-      })
-        .then(() => {
-          window.console.log("上传结束");
-        })
-        .catch(() => {
-          window.console.log("上传错误");
-        });
-    }
+    // uploadSectionFile(param) {
+    //   let form = new FormData();
+    //   form.append("file", param.file);
+    //   form.append("dir", "temp1");
+    //   Axios.post("http://localhost/upload", form, {
+    //     headers: {
+    //       "Content-Type": "multipart/form-data"
+    //     },
+    //     onUploadProgress:
+    //       ((ProgressEvent.loaded / ProgressEvent.total) * 100) | 0
+    //   })
+    //     .then(() => {
+    //       window.console.log("上传结束");
+    //     })
+    //     .catch(() => {
+    //       window.console.log("上传错误");
+    //     });
+    // }
   }
 };
 </script>
