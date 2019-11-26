@@ -29,8 +29,8 @@
               <td>{{music.description}}</td>
               <td>
                 <button
-                  @click="setEditForm(music.id,music.musicname,music.musicauthor, music.status, music.release_date, music.description)"
-                  class="btn btn-primary mr-4"
+                  @click="setEditForm(music.id,music.musicname,music.musicauthor, music.status, music.release_date, music.description,music.file)"
+                  class="btn btn-info mr-4"
                 >更新</button>
                 <button @click="remove(music.id)" class="btn btn-danger">删除</button>
               </td>
@@ -272,7 +272,7 @@
         </div>
 
         <button
-          @click="updateById(mymusic.id,mymusic.musicname,mymusic.musicauthor,mymusic.status,mymusic.release_date)"
+          @click="updateById(mymusic.id,mymusic.musicname,mymusic.musicauthor,mymusic.status,mymusic.release_date,mymusic.description)"
           class="btn btn-primary"
         >更新</button>
       </div>
@@ -353,13 +353,14 @@ export default {
       //       this.errors = "";
       //   }
       this.errors.id = ""; //错误信息清空
-      this.errors.musicname = "";
+      this.errors.description = "";
       let body = new FormData();
       body.append("id", this.mymusic.id);
       body.append("musicname", this.mymusic.musicname);
       body.append("musicauthor", this.mymusic.musicauthor);
       body.append("status", this.mymusic.status);
       body.append("release_date", this.mymusic.release_date);
+      body.append("description",this.mymusic.description);
       body.append("file", this.$refs.inputFile.files[0]);
 
       let header = {
@@ -393,8 +394,8 @@ export default {
               if (element.field == "id") {
                 this.errors.id = element.defaultMessage;
               }
-              if (element.field == "musicname") {
-                this.errors.musicname = element.defaultMessage;
+              if (element.field == "description") {
+                this.errors.description = element.defaultMessage;
               }
             });
           } else {
@@ -444,14 +445,15 @@ export default {
         //   this.musicList = this.musicList.filter()
       );
     },
-    updateById(id, name, description, author, status, date) {
+    updateById(id, name,author,status,date, description) {
       let body = {
         id: id,
         musicname: name,
         musicauthor: author,
         status: status,
+        description: description,
         release_date: date,
-        description: description
+        file:this.mymusic.file
       };
       Axios.put(`http://localhost:8080/musics/${id}`, body).then(
         // this.getmusic,
@@ -470,7 +472,7 @@ export default {
       this.mymusic.release_date = "";
       this.mymusic.description = "";
     },
-    setEditForm(id, musicname, musicauthor, status, release_date, description) {
+    setEditForm(id, musicname, musicauthor, status, release_date, description,file) {//点击更新然后再输入框显示未更新的内容
       this.EditForm = !this.EditForm;
       if (this.AddForm) {
         this.AddForm = !this.AddForm;
@@ -481,6 +483,7 @@ export default {
       this.mymusic.status = status;
       this.mymusic.release_date = release_date;
       this.mymusic.description = description;
+      this.mymusic.file = file;
     },
     // uploadSectionFile(param) {
     //   let form = new FormData();
